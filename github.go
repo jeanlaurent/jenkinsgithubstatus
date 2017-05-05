@@ -15,8 +15,8 @@ type githubStatus struct {
 }
 
 func sendGithubStatus(githubOrgProject string, accessToken string, job effectiveJob) error {
-	status := githubStatus{State: "pending", TargetURL: job.URL, Description: "Waiting for a build node", Context: job.Context}
-	url := fmt.Sprintf("https://api.github.com/repos/%v/statuses/%v?access_token=%v", githubOrgProject, job.Commit, accessToken)
+	status := githubStatus{State: "pending", TargetURL: job.URL, Description: "Pending", Context: job.Context}
+	url := fmt.Sprintf("https://api.github.com/repos/%s/statuses/%s?access_token=%s", githubOrgProject, job.Commit, accessToken)
 
 	jsonBody, err := json.Marshal(status)
 	if err != nil {
