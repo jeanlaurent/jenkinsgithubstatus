@@ -35,6 +35,11 @@ func main() {
 		fmt.Println("Reading file", *file)
 		allJobs, err = readJobsFromDisk(*file)
 	} else {
+		if *jenkinsServer == "" {
+			fmt.Println("no jenkins nor file specified, aborting")
+			flag.Usage()
+			os.Exit(-1)
+		}
 		fmt.Println("Fetching queued jobs from", *jenkinsServer)
 		allJobs, err = fetchQueuedJobs(*jenkinsUser, *jenkinsToken, *jenkinsServer)
 	}
