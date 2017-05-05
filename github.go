@@ -35,8 +35,8 @@ func sendGithubStatus(githubOrgProject string, accessToken string, job effective
 		return err
 	}
 
-	if response.StatusCode != 200 {
-		return fmt.Errorf("Non http response code (%v)", response.StatusCode)
+	if response.StatusCode >= http.StatusBadRequest {
+		return fmt.Errorf("Non OK http response code (%v)", response.StatusCode)
 	}
 	return nil
 }
