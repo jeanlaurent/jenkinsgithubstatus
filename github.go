@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 type githubStatus struct {
@@ -14,9 +15,15 @@ type githubStatus struct {
 	Context     string `json:"context"`
 }
 
-func sendGithubStatus(githubOrgProject string, accessToken string, job effectiveJob) error {
+func sendGithubStatus(githubOrgProject string, accessTokenWin string, accessTokenMac string, job effectiveJob) error {
 	status := githubStatus{State: "pending", TargetURL: job.URL, Description: "Pending", Context: job.Context}
-	url := fmt.Sprintf("https://api.github.com/repos/%s/statuses/%s?access_token=%s", githubOrgProject, job.Commit, accessToken)
+
+	token := accessTokenMac
+	if strings.HasPrefix(job.Context, "win") {
+		token = accessTokenWin
+	}
+
+	url := fmt.Sprintf("https://api.github.com/repos/%s/statuses/%s?access_token=%s", githubOrgProject, job.Commit, token)
 
 	jsonBody, err := json.Marshal(status)
 	if err != nil {
