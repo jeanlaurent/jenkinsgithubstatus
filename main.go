@@ -18,7 +18,8 @@ func main() {
 	jenkinsUser := flag.String("jenkins_user", "", "the name of the jenkins user")
 	jenkinsToken := flag.String("jenkins_token", "", "A valid token linked to the jenkins user")
 	jenkinsServer := flag.String("jenkins_server", "", "the address of the jenkins server")
-	githubToken := flag.String("github_token", "", "A Github token with repo rights.")
+	githubTokenWin := flag.String("github_tokenWin", "", "A Github token with repo rights (for Windows builds).")
+	githubTokenMac := flag.String("github_tokenMac", "", "A Github token with repo rights (for Mac builds).")
 	githubProject := flag.String("github_project", "", "A Github org/repo")
 	file := flag.String("file", "", "an optional local file")
 	readFile := false
@@ -65,15 +66,15 @@ func main() {
 	jobs := transformJenkinsJobsIntoGithubJobs(downStreamJobs)
 	for _, job := range jobs {
 		fmt.Println(job.Context)
-		if *githubToken == "" || *githubProject == "" {
+		if (*githubTokenWin == "" && *githubTokenMac == "") || *githubProject == "" {
 			continue
 		}
-		err = sendGithubStatus(*githubProject, *githubToken, job)
+		err = sendGithubStatus(*githubProject, *githubTokenWin, *githubTokenMac, job)
 		if err != nil {
 			fmt.Println(err)
 		}
 	}
-	if *githubToken == "" || *githubProject == "" {
+	if (*githubTokenWin == "" && *githubTokenMac == "") || *githubProject == "" {
 		fmt.Println("No githubtoken present skipping sending status to github")
 		os.Exit(-1)
 	}
